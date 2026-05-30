@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Application for the Position of Boyfriend — Andrew Jenson</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #FAF7F2;
+      --cream-dark: #F0EBE1;
+      --ink: #1C1917;
+      --ink-light: #44403C;
+      --ink-muted: #78716C;
+      --burgundy: #7C2D3E;
+      --burgundy-light: #A63D52;
+      --gold: #B8963E;
+      --gold-light: #D4AF6A;
+      --rule: #D6CFC4;
+      --section-bg: #FFFFFF;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── BACKGROUND TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse at 20% 10%, rgba(124,45,62,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(184,150,62,0.05) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── STATUS BADGE ── */
+    .status-badge {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: var(--cream);
+      border: 1.5px solid var(--gold);
+      border-radius: 2px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .status-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* ── WRAPPER ── */
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* ── HEADER ── */
+    .doc-header {
+      text-align: center;
+      padding: 3.5rem 2.5rem 3rem;
+      border: 1px solid var(--rule);
+      background: var(--section-bg);
+      margin-bottom: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .doc-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--burgundy), var(--gold), var(--burgundy), transparent);
+    }
+
+    .doc-header .seal {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      margin: 0 auto 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--gold);
+      background: var(--cream);
+      position: relative;
+    }
+
+    .doc-header .seal::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      border: 1px solid rgba(184,150,62,0.35);
+    }
+
+    .doc-header .eyebrow {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 1rem;
+    }
+
+    .doc-header h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+
+    .doc-header h1 span {
+      color: var(--burgundy);
+    }
+
+    .doc-header .subtitle {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0;
+      border-top: 1px solid var(--rule);
+      margin-top: 0.5rem;
+    }
+
+    .meta-item {
+      padding: 0.9rem 1rem;
+      border-right: 1px solid var(--rule);
+      text-align: left;
+    }
+
+    .meta-item:last-child {
+      border-right: none;
+    }
+
+    .meta-item .label {
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      margin-bottom: 0.2rem;
+    }
+
+    .meta-item .value {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .meta-item .value.status {
+      color: var(--gold);
+      font-weight: 600;
+    }
+
+    /* ── SECTIONS ── */
+    .section {
+      background: var(--section-bg);
+      border: 1px solid var(--rule);
+      border-top: none;
+      padding: 2.5rem 2.5rem;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--burgundy);
+      background: rgba(124,45,62,0.06);
+      border: 1px solid rgba(124,45,62,0.18);
+      border-radius: 2px;
+      padding: 0.2rem 0.5rem;
+      white-space: nowrap;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+
+    /* ── PROSE ── */
+    p {
+      font-size: 0.92rem;
+      color: var(--ink-light);
+      margin-bottom: 1rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .lead {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--ink);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── LISTS ── */
+    .bullet-list {
+      list-style: none;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .bullet-list li {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      padding: 0.35rem 0 0.35rem 1.4rem;
+      position: relative;
+      border-bottom: 1px dashed rgba(214,207,196,0.5);
+    }
+
+    .bullet-list li:last-child {
+      border-bottom: none;
+    }
+
+    .bullet-list li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--burgundy);
+      font-weight: 600;
+    }
+
+    /* ── QUALIFICATIONS GRID ── */
+    .qual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 540px) {
+      .qual-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .qual-card {
+      background: var(--cream);
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      padding: 1rem 1.1rem;
+    }
+
+    .qual-card .card-title {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--burgundy);
+      margin-bottom: 0.6rem;
+    }
+
+    /* ── CLAUSES ── */
+    .clause {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.2rem;
+      background: var(--cream);
+      border-left: 3px solid var(--burgundy);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .clause:last-child {
+      margin-bottom: 0;
+    }
+
+    .clause-title {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--burgundy);
+      margin-bottom: 0.5rem;
+    }
+
+    .clause p {
+      font-size: 0.87rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── PROHIBITED LIST ── */
+    .prohibited-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      margin: 0.75rem 0;
+    }
+
+    @media (max-width: 480px) {
+      .prohibited-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .prohibited-list li {
+      font-size: 0.83rem;
+      color: var(--ink-light);
+      padding: 0.4rem 0.6rem 0.4rem 1.6rem;
+      background: rgba(124,45,62,0.04);
+      border: 1px solid rgba(124,45,62,0.1);
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .prohibited-list li::before {
+      content: '✕';
+      position: absolute;
+      left: 0.5rem;
+      color: var(--burgundy);
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    /* ── EXPECTATIONS LIST ── */
+    .expectations-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    @media (max-width: 480px) {
+      .expectations-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .expectations-list li {
+      font-size: 0.85rem;
+      color: var(--ink-light);
+      padding: 0.55rem 0.7rem 0.55rem 2rem;
+      background: rgba(184,150,62,0.05);
+      border: 1px solid rgba(184,150,62,0.2);
+      border-radius: 2px;
+      position: relative;
+      font-weight: 400;
+    }
+
+    .expectations-list li::before {
+      content: '✦';
+      position: absolute;
+      left: 0.6rem;
+      color: var(--gold);
+      font-size: 0.65rem;
+    }
+
+    /* ── CALLOUT ── */
+    .callout {
+      background: linear-gradient(135deg, rgba(124,45,62,0.05) 0%, rgba(184,150,62,0.05) 100%);
+      border: 1px solid rgba(124,45,62,0.15);
+      border-radius: 2px;
+      padding: 1.4rem 1.6rem;
+      margin: 1.25rem 0;
+    }
+
+    .callout p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 0.97rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── RULE ── */
+    .rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 1.5rem 0;
+    }
+
+    /* ── INLINE EMPHASIS ── */
+    strong {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    em {
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    /* ── SIGNATURE SECTION ── */
+    .signature-section {
+      background: var(--section-bg);
+      border: 1px solid var(--rule);
+      border-top: none;
+      padding: 2.5rem 2.5rem 3rem;
+      text-align: center;
+      position: relative;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease 0.1s, transform 0.55s ease 0.1s;
+    }
+
+    .signature-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .signature-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--burgundy), var(--gold), var(--burgundy), transparent);
+    }
+
+    .signature-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-style: italic;
+      color: var(--ink);
+      margin: 1rem 0 0.25rem;
+    }
+
+    .signature-line {
+      width: 200px;
+      height: 1px;
+      background: var(--ink);
+      margin: 0 auto 0.5rem;
+    }
+
+    .signature-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    .footer-note {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── WEAKNESS ITEMS ── */
+    .weakness-item {
+      display: flex;
+      gap: 0.8rem;
+      padding: 0.8rem 0;
+      border-bottom: 1px dashed rgba(214,207,196,0.6);
+      align-items: flex-start;
+    }
+
+    .weakness-item:last-child {
+      border-bottom: none;
+    }
+
+    .weakness-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.75rem;
+      color: var(--burgundy);
+      font-weight: 700;
+      min-width: 1.2rem;
+      padding-top: 0.1rem;
+    }
+
+    .weakness-text {
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      flex: 1;
+    }
+
+    /* ── DOC FOOTER ── */
+    .doc-footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 600px) {
+      .wrapper {
+        padding: 2rem 1rem 5rem;
+      }
+
+      .doc-header,
+      .section,
+      .signature-section {
+        padding: 1.75rem 1.25rem;
+      }
+
+      .meta-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .status-badge {
+        top: 0.75rem;
+        right: 0.75rem;
+        font-size: 0.6rem;
+        padding: 0.35rem 0.7rem;
+      }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .status-badge { display: none; }
+      .section, .signature-section { opacity: 1; transform: none; }
+      body { background: white; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="status-badge">Pending Review</div>
+
+  <div class="wrapper">
+
+    <!-- HEADER -->
+    <header class="doc-header">
+      <div class="seal">♡</div>
+      <div class="eyebrow">Official Document · Confidential</div>
+      <h1>Application for the<br><span>Position of Boyfriend</span></h1>
+      <div class="subtitle">Formal Submission · Single Applicant</div>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="label">Submitted To</div>
+          <div class="value">Kayla</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Submitted By</div>
+          <div class="value">Andrew Jenson</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Application Status</div>
+          <div class="value status">Pending Review</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Desired Start Date</div>
+          <div class="value">Negotiable</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 1</span>
+        <h2 class="section-title">Applicant Information</h2>
+      </div>
+
+      <p><strong>Name:</strong> Andrew Jenson</p>
+
+      <div class="qual-grid">
+        <div class="qual-card">
+          <div class="card-title">Relevant Qualifications</div>
+          <ul class="bullet-list">
+            <li>Emotionally intelligent enough to know relationships require effort.</li>
+            <li>Emotionally too intense and direct at times — needs to be called out.</li>
+            <li>Strong communicator (after regulating first).</li>
+            <li>Protective by nature.</li>
+            <li>Highly loyal once emotionally invested.</li>
+            <li>Competitive, occasionally stubborn, but coachable.</li>
+          </ul>
+        </div>
+        <div class="qual-card">
+          <div class="card-title">Special Skills</div>
+          <ul class="bullet-list">
+            <li>Making people feel safe enough to be themselves.</li>
+            <li>Overanalyzing text messages.</li>
+            <li>Parallel parking.</li>
+            <li>Strong eye contact.</li>
+            <li>Accidentally turning small conversations into emotionally significant ones.</li>
+            <li>Detecting when someone says "I'm fine" and absolutely is not fine.</li>
+          </ul>
+        </div>
+      </div>
+
+      <hr class="rule" />
+
+      <div class="clause">
+        <div class="clause-title">Current Understanding of Applicant</div>
+        <p>Applicant understands that the person reviewing this application deeply values emotional safety, fiercely protects the people she loves, struggles to trust easily, and has one of the biggest hearts he has ever encountered.</p>
+        <p>Applicant additionally acknowledges that reviewer's dedication to her children is one of the most admirable qualities he has ever seen in another human being.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 2 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 2</span>
+        <h2 class="section-title">Why I Am Applying</h2>
+      </div>
+
+      <p class="lead">Because despite all logic suggesting this would probably be complicated, difficult, emotionally intense, and occasionally chaotic…</p>
+
+      <p class="lead">I still think there could be something incredibly good here.</p>
+
+      <hr class="rule" />
+
+      <p>You make people feel important. Not performatively. Genuinely.</p>
+      <p>You challenge people. You see through people. You care deeply. You protect yourself hard. And underneath all of that, I think you just want to feel safe enough to stop carrying everything alone for once.</p>
+      <p>I also think you see through me far more easily than I'm comfortable admitting.</p>
+
+      <div class="callout">
+        <p>And for whatever reason, that has never really made me want to run.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 3</span>
+        <h2 class="section-title">Understanding the Risks Involved</h2>
+      </div>
+
+      <p>This application acknowledges the following known risks:</p>
+      <ul class="bullet-list">
+        <li>Two strong personalities.</li>
+        <li>Two competitive people.</li>
+        <li>Two people who feel deeply.</li>
+        <li>Two people who protect themselves differently.</li>
+        <li>Two people who are capable of unintentionally hurting each other when overwhelmed.</li>
+      </ul>
+
+      <div class="callout">
+        <p>Applicant acknowledges that conflict would not be the danger.</p>
+        <p><strong>Ego would be.</strong></p>
+      </div>
+
+      <p>The objective would never be: <em>"Who wins?"</em></p>
+      <p>The objective would always be: <em>"How do we protect the relationship while solving the problem?"</em></p>
+      <p>Applicant firmly believes those are two very different things.</p>
+    </section>
+
+    <!-- SECTION 4 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 4</span>
+        <h2 class="section-title">Terms &amp; Conditions of Potential Boyfriendship</h2>
+      </div>
+
+      <p>If approved, applicant agrees to the following operating conditions:</p>
+
+      <div class="clause">
+        <div class="clause-title">Emotional Safety Clause</div>
+        <p>Vulnerabilities shared during moments of trust may never be weaponized later during conflict. Ever.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Communication Clause</div>
+        <p>Honest communication is required, especially when uncomfortable. <em>"I'm fine"</em> will be considered suspicious behavior.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Space &amp; Regulation Clause</div>
+        <p>Either party may request space when emotionally overwhelmed without fear of abandonment, punishment, retaliation, or passive-aggressive behavior. However, reconnection and communication must eventually occur.</p>
+        <p>Applicant believes healthy relationships require both regulation and repair.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Affection Clause</div>
+        <p>Consistent affection, reassurance, quality time, and emotional presence are mandatory relationship requirements.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Conflict Clause</div>
+        <p>The goal during disagreements is not defeating each other. The goal is understanding each other.</p>
+        <p>First person to intentionally hurt the other person loses automatically. Winning an argument at the expense of the relationship will also be considered losing.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Assumption Clause</div>
+        <p>Neither party may assume malicious intent during moments of emotional flooding or fear. Clarification is encouraged before conclusions are reached.</p>
+      </div>
+
+      <div class="clause">
+        <div class="clause-title">Competitive Clause</div>
+        <p>Healthy competition is acceptable. Trash talk is permitted within reasonable limits. Rock-paper-scissors may be used for minor disputes.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 5 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 5</span>
+        <h2 class="section-title">Conflict Resolution Protocol</h2>
+      </div>
+
+      <p>The following behaviors are strictly prohibited during disagreements:</p>
+
+      <ul class="prohibited-list">
+        <li>Personal attacks</li>
+        <li>Humiliation</li>
+        <li>Manipulation</li>
+        <li>Silent punishment</li>
+        <li>Threatening the relationship impulsively</li>
+        <li>Using insecurities as ammunition</li>
+        <li>Weaponizing vulnerability</li>
+      </ul>
+
+      <div class="callout">
+        <p>Applicant strongly believes that if two people are brave enough to be emotionally vulnerable with each other, that vulnerability must become <strong>protected territory</strong>.</p>
+        <p>Not a weapon.</p>
+      </div>
+
+      <p>Both parties agree that emotional flooding is real and temporary.</p>
+      <p><strong>A hard moment is not automatically a failed relationship.</strong></p>
+    </section>
+
+    <!-- SECTION 6 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 6</span>
+        <h2 class="section-title">Applicant Weaknesses</h2>
+      </div>
+
+      <p>Applicant acknowledges the following known defects:</p>
+
+      <div class="weakness-item">
+        <span class="weakness-num">01</span>
+        <span class="weakness-text">Can become emotionally intense when deeply invested.</span>
+      </div>
+      <div class="weakness-item">
+        <span class="weakness-num">02</span>
+        <span class="weakness-text">Occasionally pushes for vulnerability before emotional safety has fully formed.</span>
+      </div>
+      <div class="weakness-item">
+        <span class="weakness-num">03</span>
+        <span class="weakness-text">Can struggle to slow down and fully listen while emotionally flooded.</span>
+      </div>
+      <div class="weakness-item">
+        <span class="weakness-num">04</span>
+        <span class="weakness-text">Sometimes tries to solve emotional situations too quickly instead of simply sitting in them.</span>
+      </div>
+
+      <div class="callout" style="margin-top:1.25rem;">
+        <p>Applicant is actively working on these things and believes self-awareness is more valuable than pretending perfection exists.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 7 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 7</span>
+        <h2 class="section-title">Expectations of a Healthy Relationship</h2>
+      </div>
+
+      <p>Applicant desires a relationship built on:</p>
+
+      <ul class="expectations-list">
+        <li>Honesty</li>
+        <li>Consistency</li>
+        <li>Affection</li>
+        <li>Communication</li>
+        <li>Mutual Respect</li>
+        <li>Emotional Safety</li>
+        <li>Fierce Protection of One Another</li>
+      </ul>
+
+      <p style="margin-top:1.25rem;">Especially when life gets hard.</p>
+    </section>
+
+    <!-- SECTION 8 -->
+    <section class="section">
+      <div class="section-header">
+        <span class="section-number">§ 8</span>
+        <h2 class="section-title">Final Statement</h2>
+      </div>
+
+      <p>I don't think relationships survive because two people avoid conflict.</p>
+      <p>I think they survive because two people decide the relationship matters more than their pride does.</p>
+
+      <hr class="rule" />
+
+      <div class="callout">
+        <p>And if I'm being honest…</p>
+        <p>I think we could either drive each other completely insane…</p>
+        <p>or build something incredibly strong.</p>
+        <p><strong>Possibly both.</strong></p>
+      </div>
+    </section>
+
+    <!-- SIGNATURE -->
+    <div class="signature-section">
+      <p style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-muted);">Respectfully Submitted</p>
+      <div class="signature-name">Andrew Jenson</div>
+      <div class="signature-line"></div>
+      <div class="signature-label">Applicant · Andrew Jenson</div>
+      <p class="footer-note">References Available Upon Request &nbsp;·&nbsp; Application Status: Pending Review</p>
+    </div>
+
+    <div class="doc-footer">
+      Submitted with honesty and without guarantee of outcome.
+    </div>
+
+  </div>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.section, .signature-section').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+
+</body>
+</html>
